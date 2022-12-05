@@ -8,15 +8,6 @@ class Player:
     def get_move(self, game):
         pass
 
-class RandomComputerPlayer(Player):
-    def __init__(self, letter):
-        super().__init__(letter)
-
-    def get_move(self, game):
-        # gets random valid spot for next move
-        square = random.choice(game.available_moves())
-        return square
-
 class HumanPlayer(Player):
     def __init__(self, letter):
         super().__init__(letter)
@@ -25,7 +16,7 @@ class HumanPlayer(Player):
         valid_square = False
         val = None
         while not valid_square:
-            square = input(self.letter + '\'s turn. Input move (0-9): ')
+            square = input(self.letter + '\'s turn. Input move (0-8): ')
             # checks that this is correct value by trying to cast to an integer
             # if not, say it's invalid
             # if spot if not available on board, also say it's invalid
@@ -36,5 +27,13 @@ class HumanPlayer(Player):
                 valid_square = True # if successful
             except ValueError:
                 print('Invalid square. Try again.')
-
         return val  
+
+class RandomComputerPlayer(Player):
+    def __init__(self, letter):
+        super().__init__(letter)
+
+    def get_move(self, game):
+        # gets random valid spot for next move
+        square = random.choice(game.available_moves())
+        return square

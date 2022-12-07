@@ -1,4 +1,4 @@
-from player import HumanPlayer, RandomComputerPlayer
+from player import HumanPlayer, RandomComputerPlayer, GeniusComputerPlayer
 import math
 import time
 
@@ -12,13 +12,17 @@ class TicTacToe:
         return [' ' for _ in range(9)]
 
     def print_board(self):
-        for row in [self.board[i*3:(i+1) * 3] for i in range(3)]: # splits up into rows, represents which groups we choose
-            print('| ' + ' | '.join(row) + ' |')
+        # Indexes into length 9 list 
+        # i in range(3)
+        # [i*3:(i+1) * 3] = chooses group of 3 spaces representing rows
+            # ex) i = 0 --> [0:3] --> numbers in 2st row, i = 1 --> [3:6] --> numbers in 2nd row
+        for row in [self.board[i*3:(i+1) * 3] for i in range(3)]: 
+            print('| ' + ' | '.join(row) + ' |') # .join means to join as string where sep is
 
-    @staticmethod
+    @staticmethod # don't have to pass in self, prints numbers corresponding to spots
     def print_board_nums():
         # 0 | 1 | 2 etc (tells us what number corresponds to what box)
-        number_board = [[str(i) for i in range(j*3,(j+1) * 3)] for j in range(3)]
+        number_board = [[str(i) for i in range(j*3,(j+1) * 3)] for j in range(3)] # have range start at 1 so squares can be numbered 1-9?
         for row in number_board:
             print('| ' + ' | '.join(row) + ' |')
 
@@ -56,7 +60,7 @@ class TicTacToe:
             if all([spot == letter for spot in diagonal2]):
                 return True 
         
-        # if all checks fail then return False
+        # if all checks fail then return False bc no winner
         return False 
 
     def empty_squares(self):
@@ -66,7 +70,8 @@ class TicTacToe:
         return self.board.count(' ')
     
     def available_moves(self):
-        return [i for i, x in enumerate(self.board) if x == " "]
+        # if x is ' ' return i in that ' ', then returns list
+        return [i for i, x in enumerate(self.board) if x == " "] # written as a list comprehension instead
         # moves = []
         # for (i, spot) in enumerate(self.board):
         #     if spot == ' ':
@@ -76,7 +81,7 @@ class TicTacToe:
 def play(game, x_player, o_player, print_game=True):
     # returns the letter of the winner, or None for a tie
     if print_game:
-        game.print_board_nums()
+        game.print_board_nums() # shows which numbers correspond to which spots 
 
     letter = 'X' # starting letter
     # iterate while there's still empty squares
@@ -106,13 +111,31 @@ def play(game, x_player, o_player, print_game=True):
             # else:
             #     letter = 'X'
         
-        time.sleep(.8)
+        # time.sleep(.8) # creates a tiny break/delay
 
     if print_game:
         print('It\'s a tie!')
 
+# if __name__ == '__main__':
+#     x_player = HumanPlayer('X')
+#     o_player = GeniusComputerPlayer('O') 
+#     t = TicTacToe()
+#     play(t, x_player, o_player, print_game=True)
+
 if __name__ == '__main__':
-    x_player = HumanPlayer('X')
-    o_player = RandomComputerPlayer('O') 
-    t = TicTacToe()
-    play(t, x_player, o_player, print_game=True)
+    x_wins = 0
+    o_wins = 0
+    ties = 0
+    for _ in range(100):
+        x_player = RandomComputerPlayer('X')
+        o_player = GeniusComputerPlayer('O') 
+        t = TicTacToe()
+        result = play(t, x_player, o_player, print_game=False)
+        if result == 'X':
+            x_wins += 1
+        elif result == 'O':
+            o_wins += 1
+        else:
+            ties += 1
+
+    print(f'After 100 iterations, we see {x_wins} X wins, {o_wins} O wins, and {ties} ties.')
